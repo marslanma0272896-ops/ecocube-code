@@ -1,0 +1,88 @@
+name: flutter_application_1
+description: EchoCube Local TTS, STT and Mobile LLM
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.5.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # ==========================================================
+  # FLUTTER ICONS
+  # ==========================================================
+
+  cupertino_icons: ^1.0.8
+
+  # ==========================================================
+  # LOCAL / OFFLINE SHERPA-ONNX
+  # ==========================================================
+
+  sherpa_onnx: ^1.13.5
+
+  # ==========================================================
+  # PLAY GENERATED TTS WAV AUDIO
+  # ==========================================================
+
+  audioplayers: ^6.5.0
+
+  # ==========================================================
+  # MICROPHONE / PCM AUDIO FOR STT
+  # ==========================================================
+
+  record: ^6.1.2
+
+  # ==========================================================
+  # MOBILE LOCAL LLM
+  #
+  # Gemma 2B GGUF
+  # llama.cpp native Android layer
+  #
+  # NO OLLAMA
+  # NO HTTP API
+  # NO INTERNET REQUIRED AT RUNTIME
+  # ==========================================================
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+
+    # ========================================================
+    # LOCAL TTS - PIPER KATHLEEN LOW
+    # ========================================================
+
+    - assets/models/tts/vits-piper-en_US-kathleen-low/
+    - assets/models/tts/vits-piper-en_US-kathleen-low/espeak-ng-data/
+
+    # ========================================================
+    # LOCAL STT - NEMO CONFORMER MEDIUM CTC
+    # ========================================================
+
+    - assets/models/stt/nemo-conformer-medium/
+
+    # ========================================================
+    # LOCAL MOBILE LLM - GEMMA 2B GGUF
+    #
+    # Put your GGUF model here:
+    #
+    # assets/models/llm/gemma-2b/
+    #
+    # Example:
+    # gemma-2b-it-Q4_K_M.gguf
+    #
+    # IMPORTANT:
+    # This model is bundled into the Flutter application.
+    # It does NOT use Ollama.
+    # ========================================================
+
+    - assets/models/llm/gemma-2b/
