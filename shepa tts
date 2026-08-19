@@ -1,0 +1,128 @@
+import 'package:sherpa_onnx/sherpa_onnx.dart' as sherpa_onnx;
+
+class SherpaTtsService {
+  late sherpa_onnx.OfflineTts _tts;
+
+  bool _initialized = false;
+
+  // ============================================================
+  // PIPER MODEL
+  // ============================================================
+
+  static const String _modelPath =
+      'assets/models/tts/vits-piper-en_US-kathleen-low/en_US-kathleen-low.onnx';
+
+  static const String _tokensPath =
+      'assets/models/tts/vits-piper-en_US-kathleen-low/tokens.txt';
+
+  static const String _dataDir =
+      'assets/models/tts/vits-piper-en_US-kathleen-low/espeak-ng-data';
+
+  // ============================================================
+  // INITIALIZE
+  // ============================================================
+
+  Future<void> initialize() async {
+    if (_initialized) {
+      return;
+    }
+
+    print('Initializing LOCAL Sherpa-ONNX TTS...');
+
+    // ----------------------------------------------------------
+    // VITS / PIPER MODEL CONFIG
+    // ----------------------------------------------------------
+
+    final vitsConfig =
+        sherpa_onnx.OfflineTtsVitsModelConfig(
+      model: _modelPath,
+      tokens: _tokensPath,
+      dataDir: _dataDir,
+    );
+
+    // ----------------------------------------------------------
+    // OFFLINE TTS MODEL CONFIG
+    // ----------------------------------------------------------
+
+    final modelConfig =
+        sherpa_onnx.OfflineTtsModelConfig(
+      vits: vitsConfig,
+    );
+
+    // ----------------------------------------------------------
+    // TTS CONFIG
+    // ----------------------------------------------------------
+
+    final ttsConfig =
+        sherpa_onnx.OfflineTtsConfig(
+      model: modelConfig,
+    );
+
+    // ----------------------------------------------------------
+    // CREATE TTS
+    // ----------------------------------------------------------
+
+    _tts = sherpa_onnx.OfflineTts(
+      ttsConfig,
+    );
+
+    _initialized = true;
+
+    print('LOCAL TTS READY');
+  }
+
+  // ============================================================
+  // GENERATE SPEECH
+  // ============================================================
+
+  sherpa_onnx.GeneratedAudio? generate(
+    String text,
+  ) {
+    if (!_initialized) {
+      throw Exception(
+        'TTS has not been initialized.',
+      );
+    }
+
+    if (text.trim().isEmpty) {
+      return null;
+    }
+
+    print('--------------------------------');
+    print('LOCAL TTS');
+    print('Raw text: ${text.trim()}');
+
+    final audio = _tts.generate(
+      text: text.trim(),
+      sid: 0,
+      speed: 1.0,
+    );
+
+    print(
+      'Generated samples: '
+      '${audio.samples.length}',
+    );
+
+    print(
+      'Sample rate: '
+      '${audio.sampleRate}',
+    );
+
+    print('--------------------------------');
+
+    return audio;
+  }
+
+  // ============================================================
+  // DISPOSE
+  // ============================================================
+
+  void dispose() {
+    if (_initialized) {
+      _tts.free();
+      _initialized = false;
+
+      print('LOCAL TTS DISPOSED');
+    }
+  }
+}
